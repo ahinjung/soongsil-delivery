@@ -1,168 +1,112 @@
 
 document.addEventListener("DOMContentLoaded", function () {
+    const deliveryPage = document.querySelector("#delivery-page");
+    const groupPage = document.querySelector("#group-page");
 
-    const posts = [
-        ...document.querySelectorAll(
-            ".auto-layout-vertical-2 > div, .auto-layout-vertical-6 > div"
-        )
-    ].filter(post => post.querySelector(".text-wrapper-2"));
+    const deliveryButton = document.querySelector(".div-2 .view");
+    const groupButton = document.querySelector(".div-2 .do-something-wrapper");
 
-    const deliveryButton = document.querySelector(".view");
-    const groupButton = document.querySelector(".do-something-wrapper");
+    const headerLine = document.querySelector(".header-2");
+    const logo = document.querySelector(".text-wrapper-7");
+    const headerLinks = document.querySelectorAll(".header .text-wrapper-8");
+    const accountButton = document.querySelector(".style-filled");
+    const accountText = document.querySelector(".do-something-7");
 
-    const categoryButtons = [
-        document.querySelector(".view-2"),
-        document.querySelector(".view-3"),
-        document.querySelector(".div-3"),
-        document.querySelector(".view-4"),
-        document.querySelector(".view-5"),
-        document.querySelector(".view-6"),
-        document.querySelector(".view-7"),
-        document.querySelector(".view-8")
-    ];
+    function showPage(type) {
+        const isDelivery = type === "delivery";
+        const color = isDelivery ? "#ffb238" : "#52b788";
 
-    const categories = [
-        "전체",
-        "한식",
-        "치킨",
-        "일식",
-        "양식",
-        "분식",
-        "카페",
-        "중식"
-    ];
+        deliveryPage.style.display = isDelivery ? "block" : "none";
+        groupPage.style.display = isDelivery ? "none" : "block";
 
-    let selectedCategory = "전체";
-    let selectedType = "배달";
+        deliveryButton.style.backgroundColor = isDelivery ? color : "transparent";
+        deliveryButton.style.borderColor = color;
+        deliveryButton.querySelector(".do-something").style.color =
+            isDelivery ? "#ffffff" : color;
 
-    function filterPosts() {
-        posts.forEach(post => {
-            const title = post.querySelector(".text-wrapper-2").textContent;
+        groupButton.style.backgroundColor = isDelivery ? "transparent" : color;
+        groupButton.style.borderColor = color;
+        groupButton.querySelector(".do-something-2").style.color =
+            isDelivery ? color : "#ffffff";
 
-            const categoryMatch =
-                selectedCategory === "전체" ||
-                title.includes(selectedCategory);
+        headerLine.style.borderBottomColor = color;
+        logo.style.color = color;
 
-            const typeMatch = selectedType === "배달";
+        headerLinks.forEach(function (link) {
+            link.style.color = color;
+        });
 
-            post.style.display =
-                categoryMatch && typeMatch ? "" : "none";
+        accountButton.style.backgroundColor = color;
+        accountButton.style.borderColor = color;
+        accountText.style.color = "#ffffff";
+
+        document.querySelectorAll(".dropdown-button .rectangle").forEach(function (item) {
+            item.style.borderColor = color;
+        });
+
+        document.querySelectorAll(".dropdown-button .text-wrapper-2, .dropdown-button .text-wrapper-6").forEach(function (item) {
+            item.style.color = color;
+        });
+
+        document.querySelectorAll(".dropdown-button .dropdown-menu").forEach(function (item) {
+            item.style.borderColor = color;
+        });
+
+        document.querySelectorAll(".dropdown-option").forEach(function (item) {
+            item.style.color = color;
         });
     }
 
-    if (deliveryButton) {
-        deliveryButton.style.cursor = "pointer";
+    deliveryButton.addEventListener("click", function () {
+        showPage("delivery");
+    });
 
-        deliveryButton.addEventListener("click", function () {
-            selectedType = "배달";
-            filterPosts();
-        });
-    }
+    groupButton.addEventListener("click", function () {
+        showPage("group");
+    });
 
-    if (groupButton) {
-        groupButton.style.cursor = "pointer";
+    function activateCategories(container, color) {
+        const buttons = container.querySelectorAll(":scope > div");
 
-        groupButton.addEventListener("click", function () {
-            selectedType = "공동구매";
-            filterPosts();
-        });
-    }
+        buttons.forEach(function (button) {
+            button.addEventListener("click", function () {
+                buttons.forEach(function (item) {
+                    item.style.backgroundColor = "transparent";
+                    const label = item.querySelector("div");
+                    if (label) label.style.color = color;
+                });
 
-    categoryButtons.forEach((button, index) => {
-        if (!button) return;
-
-        button.style.cursor = "pointer";
-
-        button.addEventListener("click", function () {
-            selectedCategory = categories[index];
-            selectedType = "배달";
-
-            categoryButtons.forEach(item => {
-                if (item) item.classList.remove("active");
+                button.style.backgroundColor = color;
+                const label = button.querySelector("div");
+                if (label) label.style.color = "#ffffff";
             });
+        });
+    }
 
-            button.classList.add("active");
+    activateCategories(
+        document.querySelector(".delivery-categories"),
+        "#ffb238"
+    );
 
-            filterPosts();
+    activateCategories(
+        document.querySelector("#group-page .group"),
+        "#52b788"
+    );
+
+    document.querySelectorAll(".dropdown-button").forEach(function (dropdown) {
+        const label = dropdown.querySelector(".text-wrapper-2, .text-wrapper-6");
+
+        dropdown.addEventListener("click", function (event) {
+            const option = event.target.closest(".dropdown-option");
+
+            if (option) {
+                label.textContent = option.textContent;
+                dropdown.classList.remove("open");
+            } else {
+                dropdown.classList.toggle("open");
+            }
         });
     });
 
-    const initialCategoryButton = categoryButtons[0];
-
-    const sortOptions = ["마감 임박 순", "빠른 주문 순", "최신 순"];
-    let currentSortIndex = 0;
-
-    if (initialCategoryButton) {
-        initialCategoryButton.classList.add("active");
-    }
-
-    filterPosts();
-
-    const sortButton = document.querySelector(".dropdown-button");
-    const sortText = document.querySelector(".text-wrapper-6");
-    const dropdownOptions = document.querySelectorAll(".dropdown-option");
-
-    if (sortButton) {
-        sortButton.addEventListener("click", function (event) {
-            event.stopPropagation();
-            sortButton.classList.toggle("open");
-        });
-    }
-
-    dropdownOptions.forEach(option => {
-        option.addEventListener("click", function (event) {
-            event.stopPropagation();
-
-            const selectedSort = option.textContent.trim();
-
-            sortText.textContent = selectedSort;
-            sortButton.classList.remove("open");
-
-            sortPosts(selectedSort);
-        });
-    });
-
-    document.addEventListener("click", function () {
-        sortButton?.classList.remove("open");
-    });
-
-    function sortPosts(sortType) {
-        const postContainer = document.querySelector(".auto-layout-vertical-2");
-
-        if (!postContainer) return;
-
-        const sortedPosts = [...posts];
-
-        sortedPosts.sort((a, b) => {
-            if (sortType === "마감 임박 순") {
-                return getTime(a, "모집 마감 시간") -
-                    getTime(b, "모집 마감 시간");
-            }
-
-            if (sortType === "빠른 주문 순") {
-                return getTime(a, "주문 예정 시간") -
-                    getTime(b, "주문 예정 시간");
-            }
-
-            if (sortType === "최신 순") {
-                return new Date(b.dataset.createdAt || 0) -
-                    new Date(a.dataset.createdAt || 0);
-            }
-        });
-
-        sortedPosts.forEach(post => postContainer.appendChild(post));
-
-        filterPosts();
-    }
-
-    function getTime(post, label) {
-        const text = post.querySelector(".element")?.textContent || "";
-        const match = text.match(
-            new RegExp(label + ":\\s*오후?\\s*(\\d{1,2})시\\s*(\\d{1,2})분")
-        );
-
-        if (!match) return Infinity;
-
-        return Number(match[1]) * 60 + Number(match[2]);
-    }
+    showPage("delivery");
 });

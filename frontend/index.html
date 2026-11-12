@@ -1,6 +1,6 @@
+
 <!DOCTYPE html>
 <html>
-
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta charset="utf-8" />
@@ -8,64 +8,9 @@
     <link rel="stylesheet" href="css/styleguide.css">
     <link rel="stylesheet" href="css/style.css">
 </head>
-
 <body>
     <div class="div-wrapper">
-        <div class="auto-layout-vertical">
-            <div class="text-wrapper">오늘 뭐 먹지?</div>
-            <p class="div">혼자 시키기 부담스러웠던 배달 음식, 배달비 아껴 주문하고 캠퍼스에서 수령하세요.<br />복잡한 과정 없이 가장 가까운 시간대의 주문을 실시간으로 찾을 수 있어요.
-            </p>
-        </div>
-        <img class="line" src="img/line.svg" />
-        <div class="auto-layout-vertical-2">
-            <div class="empty-posts">
-                <p>아직 등록된 게시물이 없습니다.</p>
-                <span>새로운 공동 주문 게시물이 등록되면 이곳에 표시됩니다.</span>
-            </div>
-        </div>
-        <div class="div-2">
-            <div class="view">
-                <div class="do-something">배달</div>
-            </div>
-            <div class="do-something-wrapper">
-                <div class="do-something-2">공동구매</div>
-            </div>
-        </div>
-        <div class="view-2">
-            <div class="text-wrapper-3">전체</div>
-        </div>
-        <div class="view-3">
-            <div class="text-wrapper-4">한식</div>
-        </div>
-        <div class="div-3">
-            <div class="text-wrapper-5">치킨/피자</div>
-        </div>
-        <div class="view-4">
-            <div class="text-wrapper-4">일식</div>
-        </div>
-        <div class="view-5">
-            <div class="text-wrapper-4">양식</div>
-        </div>
-        <div class="view-6">
-            <div class="text-wrapper-4">분식</div>
-        </div>
-        <div class="view-7">
-            <div class="text-wrapper-4">카페</div>
-        </div>
-        <div class="view-8">
-            <div class="text-wrapper-4">중식</div>
-        </div>
-        <div class="dropdown-button">
-            <div class="rectangle"></div>
-            <div class="text-wrapper-6">마감 임박 순</div>
-            <img class="subtract" src="img/subtract.svg" />
 
-            <div class="dropdown-menu">
-                <div class="dropdown-option">마감 임박 순</div>
-                <div class="dropdown-option">빠른 주문 순</div>
-                <div class="dropdown-option">최신 순</div>
-            </div>
-        </div>
         <header class="header">
             <div class="header-2"></div>
             <div class="text-wrapper-7">LOGO</div>
@@ -74,13 +19,96 @@
                 <div class="text-wrapper-8">검색하기</div>
                 <div class="text-wrapper-8">문의하기</div>
                 <div class="style-filled">
-                    <div class="do-something-3">내 계정</div>
+                    <div class="do-something-7">내 계정</div>
                 </div>
             </div>
         </header>
+
+        <div class="div-2">
+            <div class="view">
+                <div class="do-something">배달</div>
+            </div>
+            <div class="do-something-wrapper">
+                <div class="do-something-2">공동구매</div>
+            </div>
+        </div>
+
+        <section id="delivery-page">
+            <div class="auto-layout-vertical">
+                <div class="text-wrapper">오늘 뭐 먹지?</div>
+                <p class="div">혼자 시키기 부담스러웠던 배달 음식, 배달비 아껴 주문하고 캠퍼스에서 수령하세요.<br />복잡한 과정 없이 가장 가까운 시간대의 주문을 실시간으로 찾을 수 있어요.</p>
+            </div>
+
+            <img class="line" src="img/line.svg" />
+
+            <div class="category-row delivery-categories">
+                <div class="view-2"><div class="text-wrapper-3">전체</div></div>
+                <div class="view-3"><div class="text-wrapper-4">한식</div></div>
+                <div class="div-3"><div class="text-wrapper-5">치킨/피자</div></div>
+                <div class="view-8"><div class="text-wrapper-4">중식</div></div>
+                <div class="view-4"><div class="text-wrapper-4">일식</div></div>
+                <div class="view-5"><div class="text-wrapper-4">양식</div></div>
+                <div class="view-6"><div class="text-wrapper-4">분식</div></div>
+                <div class="view-7"><div class="text-wrapper-4">카페</div></div>
+            </div>
+
+            <div class="dropdown-button">
+                <div class="rectangle"></div>
+                <div class="text-wrapper-6">마감 임박 순</div>
+                <img class="subtract" src="img/subtract.svg" />
+                <div class="dropdown-menu">
+                    <div class="dropdown-option">마감 임박 순</div>
+                    <div class="dropdown-option">빠른 주문 순</div>
+                    <div class="dropdown-option">최신 순</div>
+                </div>
+            </div>
+
+            <div class="auto-layout-vertical-2">
+                <div class="empty-posts">
+                    <p>아직 등록된 게시물이 없습니다.</p>
+                    <span>새로운 공동 주문 게시물이 등록되면 이곳에 표시됩니다.</span>
+                </div>
+            </div>
+        </section>
+
+        <section id="group-page" style="display: none;">
+            <div class="auto-layout-vertical">
+                <div class="text-wrapper">함께 사는 공동구매</div>
+                <p class="div">대용량이라 망설였던 생필품과 식자재를 학우들과 함께 구매해 보세요.<br />불필요한 지출을 줄이고 생활비를 알뜰하게 아낄 수 있어요.</p>
+            </div>
+
+            <img class="line" src="img/line.svg" />
+
+            <div class="category-row group">
+                <div class="button-2"><div class="do-something-3">전체</div></div>
+                <div class="button-3"><div class="do-something-4">생필품</div></div>
+                <div class="button-4"><div class="do-something-4">식료품</div></div>
+                <div class="button-4"><div class="do-something-4">문구</div></div>
+                <div class="button-4"><div class="do-something-5">생수/음료</div></div>
+                <div class="button-4"><div class="do-something-6">기타 잡화</div></div>
+            </div>
+
+            <div class="dropdown-button">
+                <div class="rectangle"></div>
+                <div class="text-wrapper-2">마감 임박 순</div>
+                <img class="subtract" src="img/subtract.svg" />
+                <div class="dropdown-menu">
+                    <div class="dropdown-option">마감 임박 순</div>
+                    <div class="dropdown-option">빠른 주문 순</div>
+                    <div class="dropdown-option">최신 순</div>
+                </div>
+            </div>
+
+            <div class="auto-layout-vertical-2">
+                <div class="empty-posts">
+                    <p>아직 등록된 게시물이 없습니다.</p>
+                    <span>새로운 공동구매 게시물이 등록되면 이곳에 표시됩니다.</span>
+                </div>
+            </div>
+        </section>
+
     </div>
 
     <script src="js/main.js"></script>
 </body>
-
 </html>
