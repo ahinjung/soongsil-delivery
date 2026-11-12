@@ -1,0 +1,158 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>마이페이지 | 같이 주문하기</title>
+
+    <link rel="stylesheet" href="css/mypage.css">
+
+    <script src="js/auth.js" defer></script>
+    <script src="js/mypage.js" defer></script>
+</head>
+<body>
+
+    <!-- 상단 메뉴 -->
+    <header class="header">
+        <h1 class="logo">LOGO</h1>
+
+        <nav>
+            <a href="index.html">홈</a>
+            <a href="mypage.html">마이페이지</a>
+            <button type="button" id="headerLogoutBtn">
+                로그아웃
+            </button>
+        </nav>
+    </header>
+
+    <main class="container">
+
+        <h2 class="page-title">마이페이지</h2>
+
+        <!-- 회원 프로필 -->
+        <section class="profile-section">
+            <div class="profile-info">
+
+                <img id="profileImage"
+                     src="images/default-profile.png"
+                     alt="프로필 사진">
+
+                <div class="user-info">
+                    <h3 id="userNickname">닉네임</h3>
+                    <p id="userEmail">이메일</p>
+                </div>
+            </div>
+
+            <button type="button" id="editProfileBtn">
+                프로필 수정
+            </button>
+        </section>
+
+        <!-- 주문 현황 -->
+        <section class="order-summary">
+
+            <div class="summary-card">
+                <h3>모집한 주문</h3>
+                <p id="createdCount">0건</p>
+            </div>
+
+            <div class="summary-card">
+                <h3>참여한 주문</h3>
+                <p id="joinedCount">0건</p>
+            </div>
+
+        </section>
+
+        <!-- 주문 내역 -->
+        <section class="orders-section">
+
+            <h3>내 주문 내역</h3>
+
+            <div class="order-tabs">
+                <button type="button"
+                        id="createdTab"
+                        class="active">
+                    내가 모집한 주문
+                </button>
+
+                <button type="button" id="joinedTab">
+                    내가 참여한 주문
+                </button>
+            </div>
+
+            <!-- JavaScript로 주문 목록 추가 -->
+            <div id="orderList" class="order-list">
+                <p class="empty-message">
+                    주문 내역이 없습니다.
+                </p>
+            </div>
+
+        </section>
+
+        <!-- 회원 설정 -->
+        <section class="account-section">
+
+            <h3>회원 설정</h3>
+
+            <button type="button" id="logoutBtn">
+                로그아웃
+            </button>
+
+            <button type="button"
+                    id="deleteAccountBtn"
+                    class="delete-btn">
+                회원 탈퇴
+            </button>
+
+        </section>
+
+    </main>
+
+    <!-- 프로필 수정 팝업 -->
+    <div id="profileModal" class="modal" hidden>
+
+        <div class="modal-content">
+
+            <h3>프로필 수정</h3>
+
+            <form id="profileForm">
+
+                <label for="editNickname">닉네임</label>
+
+                <input type="text"
+                       id="editNickname"
+                       minlength="2"
+                       maxlength="8"
+                       required>
+
+                <label for="editProfileImage">
+                    프로필 사진 변경
+                </label>
+
+                <input type="file"
+                       id="editProfileImage"
+                       accept="image/png, image/jpeg">
+
+                <div class="modal-buttons">
+
+                    <button type="button" id="cancelEditBtn">
+                        취소
+                    </button>
+
+                    <button type="submit">
+                        저장
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</body>
+</html>
