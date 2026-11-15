@@ -1,4 +1,12 @@
 document.addEventListener("DOMContentLoaded", function () {
+    const currentUser = Auth.getCurrentUser();
+
+    if (!currentUser) {
+        alert("로그인이 필요한 서비스입니다.");
+        window.location.href = "login.html";
+        return;
+    }
+    
     const form = document.getElementById("createPostForm");
     const minAmountInput = document.getElementById("minAmount");
     const maxAmountInput = document.getElementById("maxAmount");
