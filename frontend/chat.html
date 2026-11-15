@@ -3,29 +3,30 @@
 <html lang="ko">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>참여자 채팅 | 같이 주문하기
-  </title>
-
-  <link rel="stylesheet" href="css/order-pages.css">
-  <script src="js/order-pages.js" defer>
-  </script>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>참여자 채팅 | 같이 주문하기</title>
+    <link rel="stylesheet" href="css/order-pages.css">
+    <script src="js/order-pages.js" defer></script>
 </head>
-
 <body class="order-page" data-page="chat">
-  <header class="header"><div class="header-inner">
-    <a class="logo" href="index.html">LOGO
-                    <span class="brand-sub">같이 주문하기</span></a>
-    <nav class="nav" aria-label="주 메뉴"><a href="index.html">홈</a><a href="index.html#delivery-page">검색하기</a><a href="mypage.html">마이페이지</a><a class="nav-account" href="login.html">내 계정</a></nav>
-  </div></header>
-  <main class="container">
-    <div class="order-breadcrumb"><a href="index.html">홈</a><span>›</span><a id="detailBreadcrumb" href="post_detail.html">모집글 상세</a><span>›</span><span>참여자 채팅</span></div>
-    <section class="order-page-intro"><div><div class="order-eyebrow">우리끼리 소통하는 공간</div><h1>참여자 채팅</h1><p>메시지를 남기고 주문 및 수령 정보를 확인하세요.</p></div><span class="order-demo-tag">브라우저 저장형 데모</span></section>
-    <div id="chatRoot" class="order-chat-layout" aria-live="polite"></div>
-  </main>
-  <footer class="footer">같이 주문하기 · 채팅 기록은 이 브라우저에만 저장됩니다.</footer>
-  <div id="toast" class="order-toast" role="status" aria-live="polite" hidden></div>
+    <header class="header">
+        <div class="header-inner">
+            <a class="logo" href="index.html">LOGO</a>
+            <nav class="nav" aria-label="주 메뉴">
+                <a href="index.html">홈</a>
+                <a href="index.html#delivery-page">검색하기</a>
+                <a href="index.html">문의하기</a>
+                <a href="mypage.html">내 계정</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <a class="order-back-link" id="backToDetail" href="index.html">‹ 모집글 상세</a>
+        <div id="chatRoot" aria-live="polite"></div>
+    </main>
+
+    <div id="toast" class="order-toast" role="status" aria-live="polite" hidden></div>
 </body>
 </html>
