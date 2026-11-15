@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>모집글 작성 | 같이 주문하기</title>
+    <link rel="stylesheet" href="css/globals.css">
+    <link rel="stylesheet" href="css/create_post.css">
+    <script src="js/auth.js" defer></script>
+    <script src="js/create_post.js" defer></script>
+</head>
+<body>
+
+    <header class="header">
+        <h1 class="logo"><a href="index.html">LOGO</a></h1>
+        <nav>
+            <a href="index.html">홈</a>
+            <a href="create_post.html" class="active">모집글 작성</a>
+            <a href="mypage.html">마이페이지</a>
+            <button type="button" id="headerLogoutBtn">로그아웃</button>
+        </nav>
+    </header>
+
+    <main class="container">
+        <div class="form-card">
+            <h2 class="page-title">함께 주문하기 모집글 작성</h2>
+            <p class="page-desc">함께 배달을 시킬 친구들을 모아보세요!</p>
+
+            <form id="createPostForm" novalidate>
+                <div class="form-group">
+                    <label for="category">카테고리 선택 <span class="required">*</span></label>
+                    <select id="category" name="category" required>
+                        <option value="">원하는 메뉴를 골라주세요</option>
+                        <option value="한식">한식</option>
+                        <option value="치킨/피자">치킨/피자</option>
+                        <option value="중식">중식</option>
+                        <option value="일식">일식</option>
+                        <option value="양식">양식</option>
+                        <option value="분식">분식</option>
+                        <option value="카페/디저트">카페/디저트</option>
+                        <option value="기타">기타</option>
+                    </select>
+                    <p class="error-msg" id="categoryError"></p>
+                </div>
+
+                <div class="form-group">
+                    <label for="title">글 제목 <span class="required">*</span></label>
+                    <input type="text" id="title" name="title" 
+                           placeholder="예) 정보과학관 앞에서 치킨 같이 시킬 분!" maxlength="50" required>
+                    <p class="error-msg" id="titleError"></p>
+                </div>
+
+                <div class="form-group">
+                    <label for="location">받을 장소 (숭실대 건물) <span class="required">*</span></label>
+                    <select id="location" name="location" required>
+                        <option value="">건물 이름을 선택해 주세요</option>
+                        <option value="정보과학관">정보과학관</option>
+                        <option value="형남공학관">형남공학관</option>
+                        <option value="조만식기념관">조만식기념관</option>
+                        <option value="베어드홀">베어드홀</option>
+                        <option value="미래관">미래관</option>
+                        <option value="진리관">진리관</option>
+                        <option value="숭덕경상관">숭덕경상관</option>
+                        <option value="문화관">문화관</option>
+                        <option value="안익태기념관">안익태기념관</option>
+                        <option value="중앙도서관">중앙도서관</option>
+                        <option value="학생회관">학생회관</option>
+                        <option value="신양관">신양관</option>
+                        <option value="레지던스홀(기숙사)">레지던스홀(기숙사)</option>
+                    </select>
+                    <p class="error-msg" id="locationError"></p>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group half">
+                        <label for="deadlineTime">모집 끝나는 시간 <span class="required">*</span></label>
+                        <input type="time" id="deadlineTime" name="deadlineTime" required>
+                        <p class="error-msg" id="deadlineTimeError"></p>
+                    </div>
+                    <div class="form-group half">
+                        <label for="orderTime">주문할 예정 시간 <span class="required">*</span></label>
+                        <input type="time" id="orderTime" name="orderTime" required>
+                        <p class="error-msg" id="orderTimeError"></p>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="maxParticipants">모찌모집 인원 (2~10명) <span class="required">*</span></label>
+                    <input type="number" id="maxParticipants" name="maxParticipants" 
+                           min="2" max="10" value="4" required>
+                    <p class="error-msg" id="participantsError"></p>
+                </div>
+
+                <div class="form-group">
+                    <label>계산 방법 <span class="required">*</span></label>
+                    <div class="radio-group">
+                        <label class="radio-label">
+                            <input type="radio" name="settlementType" value="1/N" checked>
+                            <span>똑같이 나누기 (배달비 포함)</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="settlementType" value="individual">
+                            <span>각자 먹은 만큼 내기</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>참여 방법 <span class="required">*</span></label>
+                    <div class="radio-group">
+                        <label class="radio-label">
+                            <input type="radio" name="approvalType" value="manual" checked>
+                            <span>방장이 직접 승인하기</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="approvalType" value="instant">
+                            <span>누구나 바로 참여하기</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group half">
+                        <label for="minAmount">1인 최소 금액 (선택)</label>
+                        <div class="input-with-unit">
+                            <input type="text" id="minAmount" name="minAmount" placeholder="예) 10,000">
+                            <span>원</span>
+                        </div>
+                    </div>
+                    <div class="form-group half">
+                        <label for="maxAmount">1인 최대 금액 (선택)</label>
+                        <div class="input-with-unit">
+                            <input type="text" id="maxAmount" name="maxAmount" placeholder="예) 25,000">
+                            <span>원</span>
+                        </div>
+                        <p class="error-msg" id="amountError"></p>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="storeUrl">가게 링크 (선택)</label>
+                    <input type="url" id="storeUrl" name="storeUrl" placeholder="배달의민족 또는 쿠팡이츠 링크 주소">
+                </div>
+
+                <div class="btn-group">
+                    <button type="button" id="cancelBtn" class="cancel-btn">취소하기</button>
+                    <button type="submit" id="submitBtn" class="submit-btn">모집글 올리기</button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+</body>
+</html>
