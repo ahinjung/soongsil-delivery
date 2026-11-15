@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>모집글 상세 | 같이 주문하기</title>
+    <link rel="stylesheet" href="css/member4.css">
+    <script src="js/member4.js" defer></script>
+</head>
+<body class="member4-page" data-page="detail">
+    <header class="m4-header">
+        <div class="m4-header-inner">
+            <a class="m4-logo" href="index(2).html" aria-label="같이 주문하기 홈">LOGO<span class="m4-brand-sub">같이 주문하기</span></a>
+
+            <nav class="m4-nav" aria-label="주 메뉴">
+                <a href="index(2).html">홈</a>
+                <a href="index(2).html#delivery-page">검색하기</a>
+                <a href="mypage.html">마이페이지</a>
+                <a class="m4-nav-account" href="login.html">내 계정</a>
+            </nav>
+        </div>
+    </header>
+    <main class="m4-container">
+        <div class="m4-breadcrumb">
+            <a href="index(2).html">홈</a>
+            <span>›</span>
+            <span>모집글 상세</span>
+        </div>
+        <section class="m4-page-intro">
+            <div>
+                <div class="m4-eyebrow">함께 주문하고 함께 절약해요</div>
+                <h1>모집글 상세</h1>
+                <p>주문 정보를 확인하고 함께 주문할 사람들과 연결해 보세요.</p>
+            </div>
+            <span class="m4-demo-tag">프론트엔드 시연 모드</span>
+        </section>
+        <div id="detailRoot" class="m4-detail-grid" aria-live="polite"></div>
+
+        <section class="m4-related" aria-label="다른 예시 모집글">
+            <div class="m4-section-heading">
+                <h2>다른 모집글 살펴보기</h2>
+                <span>테스트용 예시 데이터</span>
+            </div>
+            <div id="relatedPosts" class="m4-related-cards"></div>
+        </section>
+    </main>
+
+    <footer class="m4-footer">같이 주문하기 · 웹프로그래밍 팀프로젝트 · 프론트엔드 시연 화면</footer>
+    <div id="toast" class="m4-toast" role="status" aria-live="polite" hidden></div>
+</body>
+</html>

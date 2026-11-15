@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>공동 정산 | 같이 주문하기</title>
+    <link rel="stylesheet" href="css/member4.css">
+    <script src="js/member4.js" defer></script>
+</head>
+<body class="member4-page" data-page="settlement">
+    <header class="m4-header">
+        <div class="m4-header-inner">
+            <a class="m4-logo" href="index(2).html">LOGO<span class="m4-brand-sub">같이 주문하기</span></a>
+
+            <nav class="m4-nav" aria-label="주 메뉴">
+                <a href="index(2).html">홈</a>
+                <a href="index(2).html#delivery-page">검색하기</a>
+                <a href="mypage.html">마이페이지</a>
+                <a class="m4-nav-account" href="login.html">내 계정</a>
+            </nav>
+        </div>
+    </header>
+    <main class="m4-container">
+        <div class="m4-breadcrumb">
+            <a href="index(2).html">홈</a>
+            <span>›</span>
+            <a id="settlementBreadcrumb" href="post_detail.html">모집글 상세</a>
+            <span>›</span>
+            <span>공동 정산</span>
+        </div>
+        <section class="m4-page-intro">
+            <div>
+                <div class="m4-eyebrow">투명하게 나누는 주문 비용</div>
+                <h1>공동 정산</h1>
+                <p>참여자별 정산 금액과 완료 상태를 확인하세요.</p>
+            </div>
+            <span class="m4-demo-tag">실제 송금 기능 없음</span>
+        </section>
+        <div id="settlementRoot" class="m4-settlement-grid" aria-live="polite"></div>
+    </main>
+
+    <footer class="m4-footer">같이 주문하기 · 화면의 정산은 시연용으로 실제 송금되지 않습니다.</footer>
+    <div id="toast" class="m4-toast" role="status" aria-live="polite" hidden></div>
+
+    <div id="settlementModal" class="m4-modal-backdrop" hidden role="presentation">
+        <section class="m4-modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+            <div class="m4-modal-top">
+                <h2 id="modalTitle">송금 안내</h2>
+                <button class="m4-icon-btn" id="closeModal" type="button" aria-label="닫기">✕</button>
+            </div>
+
+            <p>아래 문구를 복사하여 참여자에게 전달할 수 있어요. 실제 송금 시스템과는 연결되지 않습니다.</p>
+            <div id="settlementMessage" class="m4-copy-text"></div>
+
+            <div class="m4-actions">
+                <button type="button" class="m4-button m4-button-secondary" id="cancelModal">닫기</button>
+                <button type="button" class="m4-button m4-button-primary" id="copyMessage">안내 문구 복사</button>
+            </div>
+        </section>
+    </div>
+</body>
+</html>

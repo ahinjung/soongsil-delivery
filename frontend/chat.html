@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>참여자 채팅 | 같이 주문하기</title>
+    <link rel="stylesheet" href="css/member4.css">
+    <script src="js/member4.js" defer></script>
+</head>
+<body class="member4-page" data-page="chat">
+    <header class="m4-header">
+        <div class="m4-header-inner">
+            <a class="m4-logo" href="index(2).html">LOGO<span class="m4-brand-sub">같이 주문하기</span></a>
+
+            <nav class="m4-nav" aria-label="주 메뉴">
+                <a href="index(2).html">홈</a>
+                <a href="index(2).html#delivery-page">검색하기</a>
+                <a href="mypage.html">마이페이지</a>
+                <a class="m4-nav-account" href="login.html">내 계정</a>
+            </nav>
+        </div>
+    </header>
+    <main class="m4-container">
+        <div class="m4-breadcrumb">
+            <a href="index(2).html">홈</a>
+            <span>›</span>
+            <a id="detailBreadcrumb" href="post_detail.html">모집글 상세</a>
+            <span>›</span>
+            <span>참여자 채팅</span>
+        </div>
+        <section class="m4-page-intro">
+            <div>
+                <div class="m4-eyebrow">우리끼리 소통하는 공간</div>
+                <h1>참여자 채팅</h1>
+                <p>메시지를 남기고 주문 및 수령 정보를 확인하세요.</p>
+            </div>
+            <span class="m4-demo-tag">브라우저 저장형 데모</span>
+        </section>
+        <div id="chatRoot" class="m4-chat-layout" aria-live="polite"></div>
+    </main>
+
+    <footer class="m4-footer">같이 주문하기 · 채팅 기록은 이 브라우저에만 저장됩니다.</footer>
+    <div id="toast" class="m4-toast" role="status" aria-live="polite" hidden></div>
+</body>
+</html>
