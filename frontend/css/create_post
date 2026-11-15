@@ -1,0 +1,234 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f5f7fa;
+    color: #333;
+}
+
+.header {
+    width: 100%;
+    padding: 18px 8%;
+    background-color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+}
+
+.logo {
+    margin: 0;
+    font-size: 25px;
+}
+
+.logo a {
+    color: #3498db;
+    text-decoration: none;
+}
+
+.header nav {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+
+.header nav a {
+    text-decoration: none;
+    color: #555;
+    font-size: 14px;
+}
+
+.header nav a:hover,
+.header nav a.active {
+    color: #3498db;
+    font-weight: bold;
+}
+
+.header nav button {
+    padding: 8px 15px;
+    border: 1px solid #ddd;
+    background-color: white;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.container {
+    width: 90%;
+    max-width: 720px;
+    margin: 40px auto;
+}
+
+.form-card {
+    background-color: white;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+}
+
+.page-title {
+    font-size: 24px;
+    margin: 0 0 8px;
+    color: #222;
+}
+
+.page-desc {
+    font-size: 14px;
+    color: #888;
+    margin: 0 0 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-row {
+    display: flex;
+    gap: 16px;
+}
+
+.form-group.half {
+    flex: 1;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+}
+
+.required {
+    color: #e74c3c;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="time"],
+input[type="url"],
+select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    background-color: #fff;
+}
+
+input:focus,
+select:focus {
+    outline: none;
+    border-color: #3498db;
+}
+
+input.input-error,
+select.input-error {
+    border-color: #e74c3c;
+}
+
+.error-msg {
+    color: #e74c3c;
+    font-size: 12px;
+    margin: 6px 0 0;
+    min-height: 16px;
+}
+
+.radio-group {
+    display: flex;
+    gap: 20px;
+    padding: 10px 14px;
+    background-color: #f9fbfd;
+    border: 1px solid #eee;
+    border-radius: 6px;
+}
+
+.radio-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    font-weight: normal;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.radio-label input[type="radio"] {
+    accent-color: #3498db;
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+.input-with-unit {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-with-unit input {
+    padding-right: 32px;
+}
+
+.input-with-unit span {
+    position: absolute;
+    right: 12px;
+    font-size: 14px;
+    color: #777;
+}
+
+.btn-group {
+    display: flex;
+    gap: 12px;
+    margin-top: 30px;
+}
+
+.cancel-btn {
+    flex: 1;
+    padding: 14px;
+    background-color: white;
+    color: #555;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.cancel-btn:hover {
+    background-color: #f5f5f5;
+}
+
+.submit-btn {
+    flex: 2;
+    padding: 14px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.submit-btn:hover {
+    background-color: #217dbb;
+}
+
+@media (max-width: 600px) {
+    .form-card {
+        padding: 24px;
+    }
+    .form-row {
+        flex-direction: column;
+        gap: 0;
+    }
+    .radio-group {
+        flex-direction: column;
+        gap: 10px;
+    }
+}
