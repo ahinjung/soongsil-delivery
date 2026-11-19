@@ -24,13 +24,13 @@
     <main class="container">
         <div class="form-card">
             <h2 class="page-title">함께 주문하기 모집글 작성</h2>
-            <p class="page-desc">함께 배달을 시킬 친구들을 모아보세요!</p>
+            <p class="page-desc">숭실대 학우들과 배달비를 나누고 함께 주문해 보세요!</p>
 
             <form id="createPostForm" novalidate>
                 <div class="form-group">
                     <label for="category">카테고리 선택 <span class="required">*</span></label>
                     <select id="category" name="category" required>
-                        <option value="">원하는 메뉴를 골라주세요</option>
+                        <option value="">카테고리를 선택해 주세요</option>
                         <option value="한식">한식</option>
                         <option value="치킨/피자">치킨/피자</option>
                         <option value="중식">중식</option>
@@ -44,16 +44,16 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="title">글 제목 <span class="required">*</span></label>
+                    <label for="title">제목 입력 <span class="required">*</span></label>
                     <input type="text" id="title" name="title" 
                            placeholder="예) 정보과학관 앞에서 치킨 같이 시킬 분!" maxlength="50" required>
                     <p class="error-msg" id="titleError"></p>
                 </div>
 
                 <div class="form-group">
-                    <label for="location">받을 장소 (숭실대 건물) <span class="required">*</span></label>
+                    <label for="location">수령 장소 (숭실대 건물 목록) <span class="required">*</span></label>
                     <select id="location" name="location" required>
-                        <option value="">건물 이름을 선택해 주세요</option>
+                        <option value="">수령할 건물을 선택해 주세요</option>
                         <option value="정보과학관">정보과학관</option>
                         <option value="형남공학관">형남공학관</option>
                         <option value="조만식기념관">조만식기념관</option>
@@ -73,48 +73,48 @@
 
                 <div class="form-row">
                     <div class="form-group half">
-                        <label for="deadlineTime">모집 끝나는 시간 <span class="required">*</span></label>
+                        <label for="deadlineTime">모집 마감 시간 (당일) <span class="required">*</span></label>
                         <input type="time" id="deadlineTime" name="deadlineTime" required>
                         <p class="error-msg" id="deadlineTimeError"></p>
                     </div>
                     <div class="form-group half">
-                        <label for="orderTime">주문할 예정 시간 <span class="required">*</span></label>
+                        <label for="orderTime">주문 예정 시간 (당일) <span class="required">*</span></label>
                         <input type="time" id="orderTime" name="orderTime" required>
                         <p class="error-msg" id="orderTimeError"></p>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="maxParticipants">모찌모집 인원 (2~10명) <span class="required">*</span></label>
+                    <label for="maxParticipants">모집 인원 (2~10명) <span class="required">*</span></label>
                     <input type="number" id="maxParticipants" name="maxParticipants" 
                            min="2" max="10" value="4" required>
                     <p class="error-msg" id="participantsError"></p>
                 </div>
 
                 <div class="form-group">
-                    <label>계산 방법 <span class="required">*</span></label>
+                    <label>정산 방식 <span class="required">*</span></label>
                     <div class="radio-group">
                         <label class="radio-label">
                             <input type="radio" name="settlementType" value="1/N" checked>
-                            <span>똑같이 나누기 (배달비 포함)</span>
+                            <span>1/N (배달비 포함)</span>
                         </label>
                         <label class="radio-label">
                             <input type="radio" name="settlementType" value="individual">
-                            <span>각자 먹은 만큼 내기</span>
+                            <span>개인 메뉴별 정산</span>
                         </label>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label>참여 방법 <span class="required">*</span></label>
+                    <label>승인 방식 <span class="required">*</span></label>
                     <div class="radio-group">
                         <label class="radio-label">
                             <input type="radio" name="approvalType" value="manual" checked>
-                            <span>방장이 직접 승인하기</span>
+                            <span>모집자 승인제</span>
                         </label>
                         <label class="radio-label">
                             <input type="radio" name="approvalType" value="instant">
-                            <span>누구나 바로 참여하기</span>
+                            <span>즉시 참여제</span>
                         </label>
                     </div>
                 </div>
@@ -138,13 +138,13 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="storeUrl">가게 링크 (선택)</label>
+                    <label for="storeUrl">배달 음식점 링크 (선택)</label>
                     <input type="url" id="storeUrl" name="storeUrl" placeholder="배달의민족 또는 쿠팡이츠 링크 주소">
                 </div>
 
                 <div class="btn-group">
                     <button type="button" id="cancelBtn" class="cancel-btn">취소하기</button>
-                    <button type="submit" id="submitBtn" class="submit-btn">모집글 올리기</button>
+                    <button type="submit" id="submitBtn" class="submit-btn">모집글 등록하기</button>
                 </div>
             </form>
         </div>
