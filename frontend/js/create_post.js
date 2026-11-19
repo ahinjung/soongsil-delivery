@@ -66,7 +66,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    form.addEventListener("submit", function (e) {
+    form.addEventListener("submit", async function (e) {
         e.preventDefault();
         clearAllErrors();
 
@@ -139,8 +139,38 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
-        alert("모집글이 정상적으로 작성되었습니다!");
-        window.location.href = "index.html";
+        try {
+            const response = await fetch("http://localhost:3000/api/posts", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    category,
+                    title,
+                    location,
+                    deadlineTime,
+                    orderTime,
+                    maxParticipants,
+                    minAmount,
+                    maxAmount,
+                    status: "모집 중",
+                }),
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                alert(result.message || "모집글 등록에 실패했어요.");
+                return;
+            }
+
+            alert("모집글이 정상적으로 작성되었습니다!");
+            window.location.href = "index.html";
+        } catch (error) {
+            console.error("서버 통신 오류:", error);
+            alert("서버에 연결할 수 없어요. 백엔드 서버가 실행 중인지 확인해 주세요.");
+        }
     });
 
     cancelBtn.addEventListener("click", function () {
