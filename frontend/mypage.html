@@ -1,10 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>마이페이지 | 같이 주문하기</title>
 
@@ -13,12 +12,12 @@
     <script src="js/auth.js" defer></script>
     <script src="js/mypage.js" defer></script>
 </head>
+
 <body>
 
     <!-- 상단 메뉴 -->
     <header class="header">
-        <h1 class="logo">LOGO</h1>
-
+        <h1 class="logo"><a href="index.html">LOGO</a></h1>
         <nav>
             <a href="index.html">홈</a>
             <a href="mypage.html">마이페이지</a>
@@ -36,9 +35,7 @@
         <section class="profile-section">
             <div class="profile-info">
 
-                <img id="profileImage"
-                     src="images/default-profile.png"
-                     alt="프로필 사진">
+                <img id="profileImage" src="images/default-profile.png" alt="프로필 사진">
 
                 <div class="user-info">
                     <h3 id="userNickname">닉네임</h3>
@@ -72,9 +69,7 @@
             <h3>내 주문 내역</h3>
 
             <div class="order-tabs">
-                <button type="button"
-                        id="createdTab"
-                        class="active">
+                <button type="button" id="createdTab" class="active">
                     내가 모집한 주문
                 </button>
 
@@ -101,9 +96,7 @@
                 로그아웃
             </button>
 
-            <button type="button"
-                    id="deleteAccountBtn"
-                    class="delete-btn">
+            <button type="button" id="deleteAccountBtn" class="delete-btn">
                 회원 탈퇴
             </button>
 
@@ -122,19 +115,13 @@
 
                 <label for="editNickname">닉네임</label>
 
-                <input type="text"
-                       id="editNickname"
-                       minlength="2"
-                       maxlength="8"
-                       required>
+                <input type="text" id="editNickname" minlength="2" maxlength="8" required>
 
                 <label for="editProfileImage">
                     프로필 사진 변경
                 </label>
 
-                <input type="file"
-                       id="editProfileImage"
-                       accept="image/png, image/jpeg">
+                <input type="file" id="editProfileImage" accept="image/png, image/jpeg">
 
                 <div class="modal-buttons">
 
@@ -155,4 +142,5 @@
     </div>
 
 </body>
+
 </html>

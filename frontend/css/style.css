@@ -16,6 +16,11 @@
     width: 100%;
     height: 72px;
     z-index: 20;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 max(24px, calc((100% - 1216px) / 2));
+    box-sizing: border-box;
 }
 
 .header-2 {
@@ -24,42 +29,38 @@
     left: 0;
     width: 100%;
     height: 72px;
-    background-color: #f4f6f4;
-    border-bottom: 1px solid #2a9d8f;
+    background-color: #ffffff;
     box-sizing: border-box;
 }
 
 .text-wrapper-7 {
-    position: absolute;
-    top: 24px;
-    left: max(24px, calc((100% - 1216px) / 2));
-    font-family: "DM Sans-Bold", Helvetica;
-    font-weight: 700;
+    position: relative;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    font-weight: bold;
     color: #2a9d8f;
-    font-size: 20px;
-    letter-spacing: 0.15px;
-    line-height: 24px;
+    font-size: 25px;
+    letter-spacing: normal;
+    line-height: normal;
 }
 
 .auto-layout {
-    display: inline-flex;
+    position: relative;
+    display: flex;
     align-items: center;
     gap: 48px;
-    position: absolute;
-    top: 12px;
-    right: max(24px, calc((100% - 1216px) / 2));
 }
 
 .text-wrapper-8 {
     position: relative;
     width: fit-content;
-    font-family: var(--body-small-font-family);
-    font-weight: var(--body-small-font-weight);
+    font-family: Arial, sans-serif;
+    font-weight: normal;
     color: #2a9d8f;
-    font-size: var(--body-small-font-size);
+    font-size: 14px;
     text-align: center;
-    letter-spacing: var(--body-small-letter-spacing);
-    line-height: var(--body-small-line-height);
+    letter-spacing: normal;
+    line-height: normal;
     white-space: nowrap;
 }
 
@@ -74,9 +75,11 @@
 }
 
 .do-something-7 {
-    font-family: var(--body-small-font-family);
+    font-family: Arial, sans-serif;
     color: #f4f6f4;
-    font-size: var(--body-small-font-size);
+    font-size: 13.333px;
+    letter-spacing: normal;
+    line-height: normal;
 }
 
 .div-2 {
@@ -579,5 +582,15 @@
     #groupList {
         padding-top: 630px;
         width: calc(100% - 48px);
+    }
+}
+
+@media (max-width: 600px) {
+    .header {
+        padding: 0 15px;
+    }
+
+    .auto-layout {
+        gap: 16px;
     }
 }
