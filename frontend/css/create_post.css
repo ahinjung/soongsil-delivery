@@ -232,3 +232,14 @@ select.input-error {
         gap: 10px;
     }
 }
+
+.time-select-row {
+    display: flex;
+    gap: 8px;
+}
+
+.time-select-row select {
+    flex: 1;
+    min-width: 0;
+    padding: 12px 8px;
+}

@@ -42,6 +42,60 @@ document.addEventListener("DOMContentLoaded", function () {
     formatNumber(minAmountInput);
     formatNumber(maxAmountInput);
 
+    function setupTimeSelect(targetId) {
+        const hidden = document.getElementById(targetId);
+        const periodSel = document.querySelector('[data-time-for="' + targetId + '"][data-part="period"]');
+        const hourSel = document.querySelector('[data-time-for="' + targetId + '"][data-part="hour"]');
+        const minuteSel = document.querySelector('[data-time-for="' + targetId + '"][data-part="minute"]');
+
+        function addOption(select, value, text, isPlaceholder) {
+            const opt = document.createElement("option");
+            opt.value = value;
+            opt.textContent = text;
+            if (isPlaceholder) {
+                opt.disabled = true;
+                opt.selected = true;
+            }
+            select.appendChild(opt);
+        }
+
+        addOption(periodSel, "", "오전/오후", true);
+        addOption(periodSel, "AM", "오전");
+        addOption(periodSel, "PM", "오후");
+
+        addOption(hourSel, "", "시", true);
+        for (let h = 1; h <= 12; h++) {
+            addOption(hourSel, String(h), h + "시");
+        }
+
+        addOption(minuteSel, "", "분", true);
+        for (let m = 0; m < 60; m += 5) {
+            addOption(minuteSel, String(m), String(m).padStart(2, "0") + "분");
+        }
+
+        function sync() {
+            if (periodSel.value === "" || hourSel.value === "" || minuteSel.value === "") {
+                hidden.value = "";
+                return;
+            }
+
+            let hour = Number(hourSel.value) % 12;   // 12시는 0으로
+            if (periodSel.value === "PM") {
+                hour += 12;
+            }
+
+            hidden.value =
+                String(hour).padStart(2, "0") + ":" + String(minuteSel.value).padStart(2, "0");
+        }
+
+        periodSel.addEventListener("change", sync);
+        hourSel.addEventListener("change", sync);
+        minuteSel.addEventListener("change", sync);
+    }
+
+    setupTimeSelect("deadlineTime");
+    setupTimeSelect("orderTime");
+
     function showError(inputId, errorId, message) {
         const inputEl = document.getElementById(inputId);
         const errorEl = document.getElementById(errorId);
@@ -49,6 +103,12 @@ document.addEventListener("DOMContentLoaded", function () {
         if (inputEl) {
             inputEl.classList.add("input-error");
         }
+
+        const timeSelects = document.querySelectorAll('[data-time-for="' + inputId + '"]');
+        for (let i = 0; i < timeSelects.length; i++) {
+            timeSelects[i].classList.add("input-error");
+        }
+
         if (errorEl) {
             errorEl.textContent = message;
         }
