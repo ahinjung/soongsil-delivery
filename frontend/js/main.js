@@ -1,4 +1,3 @@
-
 document.addEventListener("DOMContentLoaded", function () {
     const deliveryPage = document.querySelector("#delivery-page");
     const groupPage = document.querySelector("#group-page");
@@ -108,5 +107,136 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
+    const listEl = document.createElement("div");
+    listEl.id = "postList";
+    deliveryPage.appendChild(listEl);
+
+    const groupListEl = document.createElement("div");
+    groupListEl.id = "groupList";
+    groupListEl.classList.add("is-empty");
+
+    const groupEmpty = document.createElement("div");
+    groupEmpty.className = "empty-posts";
+
+    const groupEmptyTitle = document.createElement("p");
+    groupEmptyTitle.textContent = "아직 등록된 게시물이 없습니다.";
+    const groupEmptyDesc = document.createElement("span");
+    groupEmptyDesc.textContent = "새로운 게시물이 등록되면 여기에 표시됩니다.";
+
+    groupEmpty.append(groupEmptyTitle, groupEmptyDesc);
+    groupListEl.appendChild(groupEmpty);
+    groupPage.appendChild(groupListEl);
+
+    function formatWon(n) {
+        return n === null || n === undefined ? null : Number(n).toLocaleString("ko-KR") + "원";
+    }
+
+    function formatAmount(min, max) {
+        const a = formatWon(min);
+        const b = formatWon(max);
+        if (a && b) return a + " ~ " + b;
+        if (a) return a + " 이상";
+        if (b) return b + " 이하";
+        return "금액 제한 없음";
+    }
+
+    function formatTime(t) {
+        if (!t) return "-";
+        const parts = t.split(":");
+        const h = Number(parts[0]);
+        const m = parts[1];
+        const period = h < 12 ? "오전" : "오후";
+        const hour12 = h % 12 === 0 ? 12 : h % 12;
+        return period + " " + hour12 + ":" + m;
+    }
+
+    function makeInfo(label, value) {
+        const row = document.createElement("div");
+        row.className = "post-info";
+
+        const k = document.createElement("span");
+        k.className = "post-info-label";
+        k.textContent = label;
+
+        const v = document.createElement("span");
+        v.className = "post-info-value";
+        v.textContent = value;
+
+        row.append(k, v);
+        return row;
+    }
+
+    function renderPost(post) {
+        const card = document.createElement("div");
+        card.className = "post-card";
+
+        const top = document.createElement("div");
+        top.className = "post-top";
+
+        const category = document.createElement("span");
+        category.className = "post-category";
+        category.textContent = post.category;
+
+        const status = document.createElement("span");
+        status.className = "post-status" + (post.status === "모집 중" ? "" : " closed");
+        status.textContent = post.status;
+
+        top.append(category, status);
+
+        const title = document.createElement("h3");
+        title.className = "post-title";
+        title.textContent = post.title;
+
+        const body = document.createElement("div");
+        body.className = "post-body";
+        body.append(
+            makeInfo("장소", post.location),
+            makeInfo("모집 마감", formatTime(post.deadlineTime)),
+            makeInfo("주문 시간", formatTime(post.orderTime)),
+            makeInfo("예상 금액", formatAmount(post.minAmount, post.maxAmount))
+        );
+
+        const footer = document.createElement("div");
+        footer.className = "post-footer";
+        footer.textContent = "👥 최대 " + post.maxParticipants + "명";
+
+        card.append(top, title, body, footer);
+        return card;
+    }
+
+    async function loadPosts() {
+        try {
+            const response = await fetch("http://localhost:3000/api/posts");
+            if (!response.ok) throw new Error("HTTP " + response.status);
+            const posts = await response.json();
+
+            listEl.textContent = "";
+            listEl.classList.toggle("is-empty", posts.length === 0);
+
+            if (posts.length === 0) {
+                const empty = document.createElement("div");
+                empty.className = "empty-posts";
+
+                const p = document.createElement("p");
+                p.textContent = "아직 등록된 게시물이 없습니다.";
+                const span = document.createElement("span");
+                span.textContent = "새로운 게시물이 등록되면 여기에 표시됩니다.";
+
+                empty.append(p, span);
+                listEl.appendChild(empty);
+                return;
+            }
+
+            posts.slice().reverse().forEach(function (post) {
+                listEl.appendChild(renderPost(post));
+            });
+        } catch (error) {
+            console.error("목록 불러오기 오류:", error);
+            listEl.classList.add("is-empty");
+            listEl.textContent = "모집글을 불러올 수 없어요. 백엔드 서버가 실행 중인지 확인해 주세요.";
+        }
+    }
+
     showPage("delivery");
+    loadPosts();
 });
