@@ -1,10 +1,10 @@
 
 // 마이페이지 기능 구현
 
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", async function () {
 
-    // 1. 로그인 여부 확인
-    let currentUser = Auth.getCurrentUser();
+    // 1. 서버에서 로그인한 회원 정보 조회
+    let currentUser = await Auth.getCurrentUser();
 
     if (!currentUser) {
         alert("로그인이 필요합니다.");
@@ -32,7 +32,11 @@ document.addEventListener("DOMContentLoaded", function () {
     const createdCount = document.getElementById("createdCount");
     const joinedCount = document.getElementById("joinedCount");
 
-    // 기본 프로필 이미지 (별도 이미지 파일 없어도 표시)
+    let createdOrders = [];
+    let joinedOrders = [];
+    let currentTab = "created";
+
+    // 기본 프로필 이미지
     const defaultProfile =
         "data:image/svg+xml;charset=UTF-8," +
         encodeURIComponent(
@@ -48,10 +52,8 @@ document.addEventListener("DOMContentLoaded", function () {
         nicknameElement.textContent = currentUser.nickname;
         emailElement.textContent = currentUser.email;
 
-        profileImage.src = currentUser.profileImage &&
-            currentUser.profileImage !== "images/default-profile.png"
-            ? currentUser.profileImage
-            : defaultProfile;
+        profileImage.src =
+            currentUser.profileImage || defaultProfile;
     }
 
     displayProfile();
@@ -63,20 +65,35 @@ document.addEventListener("DOMContentLoaded", function () {
         profileModal.hidden = false;
     });
 
-    // 팝업 닫기
     cancelEditBtn.addEventListener("click", function () {
         profileModal.hidden = true;
     });
 
-    // 팝업 바깥 클릭 시 닫기
     profileModal.addEventListener("click", function (event) {
         if (event.target === profileModal) {
             profileModal.hidden = true;
         }
     });
 
-    // 4. 프로필 저장
-    profileForm.addEventListener("submit", function (event) {
+    // 이미지 파일 읽기
+    function readImage(file) {
+        return new Promise(function (resolve, reject) {
+            const reader = new FileReader();
+
+            reader.onload = function () {
+                resolve(reader.result);
+            };
+
+            reader.onerror = function () {
+                reject(new Error("이미지를 읽을 수 없습니다."));
+            };
+
+            reader.readAsDataURL(file);
+        });
+    }
+
+    // 4. 프로필 수정 및 서버 저장
+    profileForm.addEventListener("submit", async function (event) {
         event.preventDefault();
 
         const newNickname = editNickname.value.trim();
@@ -87,145 +104,150 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
-        // 이미지 저장 함수
-        function saveProfile(imageData) {
-            const users = Auth.getUsers();
-
-            const userIndex = users.findIndex(
-                user => user.id === currentUser.id
-            );
-
-            if (userIndex === -1) {
-                alert("회원 정보를 찾을 수 없습니다.");
+        if (imageFile) {
+            if (!["image/jpeg", "image/png"].includes(imageFile.type)) {
+                alert("JPG 또는 PNG 파일만 가능합니다.");
                 return;
             }
 
-            users[userIndex].nickname = newNickname;
-
-            if (imageData) {
-                users[userIndex].profileImage = imageData;
-            }
-
-            try {
-                localStorage.setItem("users", JSON.stringify(users));
-            } catch (error) {
-                alert("저장 공간이 부족합니다. 더 작은 이미지를 사용해주세요.");
+            if (imageFile.size > 5 * 1024 * 1024) {
+                alert("이미지는 5MB 이하만 가능합니다.");
                 return;
             }
-
-            currentUser = Auth.getCurrentUser();
-            displayProfile();
-
-            profileModal.hidden = true;
-            alert("프로필이 수정되었습니다.");
         }
 
-        if (imageFile) {
-            // 파일 형식 검사
-            if (!["image/jpeg", "image/png"].includes(imageFile.type)) {
-                alert("JPG 또는 PNG 파일만 업로드할 수 있습니다.");
-                return;
+        const submitBtn = profileForm.querySelector('[type="submit"]');
+        submitBtn.disabled = true;
+
+        try {
+            let imageData;
+
+            if (imageFile) {
+                imageData = await readImage(imageFile);
             }
 
-            // 5MB로 크기 제한
-            if (imageFile.size > 5 * 1024 * 1024) {
-                alert("이미지는 5MB 이하만 선택할 수 있습니다.");
-                return;
-            }
+            const result = await Auth.updateProfile(
+                newNickname,
+                imageData
+            );
 
-            const reader = new FileReader();
+            currentUser = result.user;
 
-            reader.onload = function () {
-                saveProfile(reader.result);
-            };
+            displayProfile();
+            profileModal.hidden = true;
 
-            reader.onerror = function () {
-                alert("이미지를 읽는 중 오류가 발생했습니다.");
-            };
+            alert("프로필이 수정되었습니다.");
 
-            reader.readAsDataURL(imageFile);
-
-        } else {
-            saveProfile(null);
+        } catch (error) {
+            alert(error.message);
+        } finally {
+            submitBtn.disabled = false;
         }
     });
 
-    // 5. 주문 데이터 불러오기
-    function getOrders() {
-        return JSON.parse(localStorage.getItem("orders") || "[]");
+    // 주문 목록 메시지 표시
+    function showOrderMessage(message) {
+        orderList.innerHTML = "";
+
+        const element = document.createElement("p");
+        element.className = "empty-message";
+        element.textContent = message;
+
+        orderList.appendChild(element);
     }
 
-    function getCreatedOrders() {
-        return getOrders().filter(
-            order => String(order.creatorId) === String(currentUser.id)
-        );
-    }
+    // 5. 서버에서 주문 데이터 조회
+    async function loadOrders() {
+        showOrderMessage("주문 내역을 불러오는 중입니다.");
 
-    function getJoinedOrders() {
-        return getOrders().filter(
-            order => Array.isArray(order.participantIds) &&
-            order.participantIds.some(
-                id => String(id) === String(currentUser.id)
-            ) &&
-            String(order.creatorId) !== String(currentUser.id)
-        );
+        try {
+            createdOrders = await Auth.getCreatedOrders();
+            joinedOrders = await Auth.getJoinedOrders();
+
+            updateOrderCounts();
+            displayOrders(currentTab);
+
+        } catch (error) {
+            showOrderMessage("주문 내역을 불러오지 못했습니다.");
+            console.error(error);
+        }
     }
 
     // 주문 건수 표시
     function updateOrderCounts() {
-        createdCount.textContent = getCreatedOrders().length + "건";
-        joinedCount.textContent = getJoinedOrders().length + "건";
+        createdCount.textContent = createdOrders.length + "건";
+        joinedCount.textContent = joinedOrders.length + "건";
     }
 
     // 6. 주문 목록 출력
     function displayOrders(type) {
+
         const orders = type === "created"
-            ? getCreatedOrders()
-            : getJoinedOrders();
+            ? createdOrders
+            : joinedOrders;
 
         orderList.innerHTML = "";
 
         if (orders.length === 0) {
-            const emptyMessage = document.createElement("p");
-            emptyMessage.className = "empty-message";
-            emptyMessage.textContent = "주문 내역이 없습니다.";
-            orderList.appendChild(emptyMessage);
+            showOrderMessage("주문 내역이 없습니다.");
             return;
         }
 
         orders.forEach(function (order) {
+
             const card = document.createElement("div");
             card.className = "order-card";
 
+            // 주문 제목
             const title = document.createElement("h4");
             title.textContent = order.title || "제목 없음";
 
+            // 주문 날짜
+            const date = document.createElement("p");
+
+            date.textContent = "작성 날짜: " +
+                (order.createdAt
+                    ? new Date(order.createdAt)
+                        .toLocaleDateString("ko-KR")
+                    : "미정");
+
+            // 수령 장소
             const location = document.createElement("p");
             location.textContent = "수령 장소: " +
                 (order.location || "미정");
 
+            // 참여 인원
             const count = document.createElement("p");
-            const participantCount = Array.isArray(order.participantIds)
-                ? order.participantIds.length
-                : 0;
+
+            const participantCount =
+                Array.isArray(order.participantIds)
+                    ? order.participantIds.length
+                    : 0;
 
             count.textContent = "참여 인원: " +
                 participantCount + "/" +
                 (order.maxParticipants || "-") + "명";
 
+            // 주문 상태
             const status = document.createElement("p");
 
-            const statusNames = {
-                recruiting: "모집 중",
-                ongoing: "진행 중",
-                completed: "완료",
-                cancelled: "취소"
-            };
-
             status.textContent = "진행 상태: " +
-                (statusNames[order.status] || order.status || "미정");
+                (order.status || "미정");
 
+            // 상태별 색상
+            if (order.status === "모집 중") {
+                status.style.color = "#3498db";
+            } else if (order.status === "완료") {
+                status.style.color = "#27ae60";
+            } else if (order.status === "마감") {
+                status.style.color = "#e67e22";
+            }
+
+            status.style.fontWeight = "bold";
+
+            // 카드에 정보 추가
             card.appendChild(title);
+            card.appendChild(date);
             card.appendChild(location);
             card.appendChild(count);
             card.appendChild(status);
@@ -234,60 +256,70 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // 주문 탭 전환
+    // 모집한 주문 탭
     createdTab.addEventListener("click", function () {
+        currentTab = "created";
+
         createdTab.classList.add("active");
         joinedTab.classList.remove("active");
-        displayOrders("created");
+
+        loadOrders();
     });
 
+    // 참여한 주문 탭
     joinedTab.addEventListener("click", function () {
+        currentTab = "joined";
+
         joinedTab.classList.add("active");
         createdTab.classList.remove("active");
-        displayOrders("joined");
+
+        loadOrders();
     });
 
-    updateOrderCounts();
-    displayOrders("created");
+    // 처음 접속했을 때 주문 목록 조회
+    loadOrders();
 
     // 7. 로그아웃
-    function logout() {
-        Auth.logout();
+    async function logout() {
+        try {
+            await Auth.logout();
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     document.getElementById("logoutBtn")
         .addEventListener("click", logout);
 
-    document.getElementById("headerLogoutBtn")
-        .addEventListener("click", logout);
+    const headerLogoutBtn =
+        document.getElementById("headerLogoutBtn");
+
+    if (headerLogoutBtn) {
+        headerLogoutBtn.addEventListener("click", logout);
+    }
 
     // 8. 회원 탈퇴
     document.getElementById("deleteAccountBtn")
-        .addEventListener("click", function () {
+        .addEventListener("click", async function () {
 
             const confirmed = confirm(
-                "정말 회원 탈퇴하시겠습니까?\n탈퇴 후 회원 정보는 복구할 수 없습니다."
+                "정말 회원 탈퇴하시겠습니까?\n" +
+                "탈퇴 후 회원 정보는 복구할 수 없습니다."
             );
 
             if (!confirmed) {
                 return;
             }
 
-            const users = Auth.getUsers();
+            try {
+                const result = await Auth.deleteAccount();
 
-            const remainingUsers = users.filter(
-                user => user.id !== currentUser.id
-            );
+                alert(result.message);
 
-            localStorage.setItem(
-                "users",
-                JSON.stringify(remainingUsers)
-            );
+                window.location.href = "login.html";
 
-            sessionStorage.removeItem("currentUserId");
-
-            alert("회원 탈퇴가 완료되었습니다.");
-            window.location.href = "login.html";
+            } catch (error) {
+                alert(error.message);
+            }
         });
-
 });

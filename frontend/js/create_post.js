@@ -1,5 +1,5 @@
-document.addEventListener("DOMContentLoaded", function () {
-    const currentUser = Auth.getCurrentUser();
+document.addEventListener("DOMContentLoaded", async function () {
+    const currentUser = await Auth.getCurrentUser();
 
     if (!currentUser) {
         alert("로그인이 필요한 서비스입니다.");
@@ -202,8 +202,9 @@ document.addEventListener("DOMContentLoaded", function () {
         try {
             const response = await fetch("http://localhost:3000/api/posts", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
+               headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + Auth.getToken(),
                 },
                 body: JSON.stringify({
                     category,
@@ -220,10 +221,19 @@ document.addEventListener("DOMContentLoaded", function () {
 
             const result = await response.json();
 
-            if (!response.ok) {
-                alert(result.message || "모집글 등록에 실패했어요.");
+            if (response.status === 401) {
+                localStorage.removeItem("authToken");
+                sessionStorage.removeItem("authToken");
+
+                alert("다시 로그인해주세요.");
+                window.location.href = "login.html";
                 return;
-            }
+}
+
+        if (!response.ok) {
+            alert(result.message || "모집글 등록에 실패했어요.");
+            return;
+}
 
             alert("모집글이 정상적으로 작성되었습니다!");
             window.location.href = "index.html";

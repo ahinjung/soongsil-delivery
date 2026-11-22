@@ -1,7 +1,6 @@
 
-/* 로그인 및 회원가입 화면 동작 */
+// 로그인 및 회원가입 화면 동작
 
-// HTML 요소 가져오기
 const loginTab = document.getElementById("loginTab");
 const signupTab = document.getElementById("signupTab");
 
@@ -29,19 +28,18 @@ function switchTab(tab) {
     showMessage("");
 }
 
-loginTab.addEventListener("click", function() {
+loginTab.addEventListener("click", function () {
     switchTab("login");
 });
 
-signupTab.addEventListener("click", function() {
+signupTab.addEventListener("click", function () {
     switchTab("signup");
 });
 
-// 처음에는 로그인 화면 표시
 switchTab("login");
 
 // 회원가입 처리
-signupForm.addEventListener("submit", function(event) {
+signupForm.addEventListener("submit", async function (event) {
     event.preventDefault();
 
     const email = document.getElementById("signupEmail")
@@ -63,40 +61,61 @@ signupForm.addEventListener("submit", function(event) {
         return;
     }
 
-    // 닉네임 길이 검사
+    // 닉네임 검사
     if (nickname.length < 2 || nickname.length > 8) {
         showMessage("닉네임은 2~8자로 입력해주세요.");
         return;
     }
 
-    // 비밀번호 길이 검사
-    if (password.length < 8 || password.length > 20) {
-        showMessage("비밀번호는 8~20자로 입력해주세요.");
+    // 비밀번호 조건 검사
+    if (
+        password.length < 8 ||
+        password.length > 20 ||
+        !/[a-zA-Z]/.test(password) ||
+        !/[0-9]/.test(password) ||
+        !/[^a-zA-Z0-9\s]/.test(password)
+    ) {
+        showMessage(
+            "비밀번호는 영문, 숫자, 특수문자를 포함한 8~20자여야 합니다."
+        );
         return;
     }
 
-    // 비밀번호 확인
+    // 비밀번호 일치 확인
     if (password !== confirmPassword) {
         showMessage("비밀번호가 일치하지 않습니다.");
         return;
     }
 
-    // 회원가입 실행
-    const result = Auth.signup(email, password, nickname);
+    const submitBtn = signupForm.querySelector('[type="submit"]');
+    submitBtn.disabled = true;
 
-    if (!result.success) {
-        showMessage(result.message);
-        return;
+    try {
+        // 서버에 회원가입 요청
+        const result = await Auth.signup(
+            email,
+            password,
+            nickname
+        );
+
+        if (!result.success) {
+            showMessage(result.message);
+            return;
+        }
+
+        signupForm.reset();
+        switchTab("login");
+        showMessage(result.message, "success");
+
+    } catch (error) {
+        showMessage("회원가입 중 오류가 발생했습니다.");
+    } finally {
+        submitBtn.disabled = false;
     }
-
-    // 회원가입 성공
-    signupForm.reset();
-    switchTab("login");
-    showMessage(result.message, "success");
 });
 
 // 로그인 처리
-loginForm.addEventListener("submit", function(event) {
+loginForm.addEventListener("submit", async function (event) {
     event.preventDefault();
 
     const email = document.getElementById("loginEmail")
@@ -104,15 +123,43 @@ loginForm.addEventListener("submit", function(event) {
 
     const password = document.getElementById("loginPassword").value;
 
-    const result = Auth.login(email, password);
+    const submitBtn = loginForm.querySelector('[type="submit"]');
+    submitBtn.disabled = true;
 
-    if (!result.success) {
-        showMessage(result.message);
-        return;
+    try {
+        // 서버에 로그인 요청
+        const remember =
+            document.getElementById("rememberLogin").checked;
+
+        const result = await Auth.login(
+            email,
+            password,
+            remember
+);
+
+        if (!result.success) {
+            showMessage(result.message);
+            return;
+        }
+
+        showMessage(result.message, "success");
+
+        // 로그인 성공 시 메인 페이지 이동
+        window.location.href = "index.html";
+
+    } catch (error) {
+        showMessage("로그인 중 오류가 발생했습니다.");
+    } finally {
+        submitBtn.disabled = false;
     }
-
-    showMessage(result.message, "success");
-
-    // 로그인 성공 시 마이페이지로 이동
-    window.location.href = "mypage.html";
 });
+
+async function checkAutoLogin() {
+    const user = await Auth.getCurrentUser();
+
+    if (user) {
+        window.location.replace("index.html");
+    }
+}
+
+checkAutoLogin();

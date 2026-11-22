@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", async function () {
     const deliveryPage = document.querySelector("#delivery-page");
     const groupPage = document.querySelector("#group-page");
 
@@ -10,7 +10,24 @@ document.addEventListener("DOMContentLoaded", function () {
     const headerLinks = document.querySelectorAll(".header .text-wrapper-8");
     const accountButton = document.querySelector(".style-filled");
     const accountText = document.querySelector(".do-something-7");
+    // 로그인 상태 확인
+    const currentUser = await Auth.getCurrentUser();
 
+if (currentUser) {
+    accountText.textContent = "마이페이지";
+} else {
+    accountText.textContent = "로그인";
+}
+
+accountButton.addEventListener("click", function (event) {
+    event.preventDefault();
+
+    if (currentUser) {
+        window.location.href = "mypage.html";
+    } else {
+        window.location.href = "login.html";
+    }
+});
     function showPage(type) {
         const isDelivery = type === "delivery";
         const color = isDelivery ? "#ffb238" : "#52b788";
@@ -201,8 +218,16 @@ document.addEventListener("DOMContentLoaded", function () {
         footer.textContent = "👥 최대 " + post.maxParticipants + "명";
 
         card.append(top, title, body, footer);
-        return card;
-    }
+
+        // 모집글 상세 페이지 이동
+        card.style.cursor = "pointer";
+
+        card.addEventListener("click", function () {
+            window.location.href =
+                "post_detail.html?id=" + encodeURIComponent(post.id);
+});
+
+return card;}
 
     async function loadPosts() {
         try {

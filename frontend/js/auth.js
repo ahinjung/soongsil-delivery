@@ -1,91 +1,148 @@
 
-/* 회원 정보 및 로그인 상태 관리 (시연용) */
-
 const Auth = {
-    // 회원 정보 목록 불러오기
-    getUsers() {
-        return JSON.parse(localStorage.getItem("users") || "[]");
+    API_URL: "http://localhost:3000/api",
+
+    // 로그인 토큰 가져오기
+    getToken() {
+    return localStorage.getItem("authToken") ||
+           sessionStorage.getItem("authToken");
+},
+
+    // 서버에 데이터 요청
+    async request(endpoint, method = "GET", body = null) {
+        const headers = {
+            "Content-Type": "application/json"
+        };
+
+        const token = this.getToken();
+
+        if (token) {
+            headers.Authorization = "Bearer " + token;
+        }
+
+        const options = {
+            method: method,
+            headers: headers
+        };
+
+        if (body !== null) {
+            options.body = JSON.stringify(body);
+        }
+
+        const response = await fetch(
+            this.API_URL + endpoint,
+            options
+        );
+
+        const result = await response.json();
+
+        if (!response.ok) {
+            throw new Error(
+                result.message || "요청에 실패했습니다."
+            );
+        }
+
+        return result;
     },
 
     // 회원가입
-    signup(email, password, nickname) {
-        const users = this.getUsers();
-
-        // 이메일 중복 검사
-        if (users.some(user => user.email === email)) {
+    async signup(email, password, nickname) {
+        try {
+            return await this.request("/signup", "POST", {
+                email,
+                password,
+                nickname
+            });
+        } catch (error) {
             return {
                 success: false,
-                message: "이미 가입된 이메일입니다."
+                message: error.message
             };
         }
-
-        const newUser = {
-            id: Date.now().toString(),
-            email: email,
-            password: password,
-            nickname: nickname,
-            profileImage: "images/default-profile.png"
-        };
-
-        users.push(newUser);
-
-        localStorage.setItem("users", JSON.stringify(users));
-
-        return {
-            success: true,
-            message: "회원가입이 완료되었습니다."
-        };
     },
 
     // 로그인
-    login(email, password) {
-        const users = this.getUsers();
+async login(email, password, remember = false) {
+    try {
+        const result = await this.request("/login", "POST", {
+            email,
+            password
+        });
 
-        const user = users.find(
-            user => user.email === email &&
-                    user.password === password
-        );
+        localStorage.removeItem("authToken");
+        sessionStorage.removeItem("authToken");
 
-        if (!user) {
-            return {
-                success: false,
-                message: "이메일 또는 비밀번호가 올바르지 않습니다."
-            };
+        if (remember) {
+            localStorage.setItem("authToken", result.token);
+        } else {
+            sessionStorage.setItem("authToken", result.token);
         }
 
-        // 로그인 상태 저장 (비밀번호 제외)
-        sessionStorage.setItem("currentUserId", user.id);
+        return result;
 
+    } catch (error) {
         return {
-            success: true,
-            message: "로그인 성공!"
+            success: false,
+            message: error.message
         };
+    }
+},
+
+    // 현재 로그인한 사용자 조회
+    async getCurrentUser() {
+        if (!this.getToken()) {
+            return null;
+        }
+
+        try {
+            return await this.request("/users/me");
+        } catch (error) {
+            return null;
+        }
     },
 
-    // 로그인한 사용자 정보
-    getCurrentUser() {
-        const userId = sessionStorage.getItem("currentUserId");
+    // 프로필 수정
+    async updateProfile(nickname, profileImage) {
+        const body = { nickname };
 
-        if (!userId) {
-            return null;
+        if (profileImage !== undefined && profileImage !== null) {
+            body.profileImage = profileImage;
         }
 
-        const user = this.getUsers().find(
-            user => user.id === userId
-        );
+        return await this.request("/users/me", "PATCH", body);
+    },
 
-        if (!user) {
-            return null;
-        }
+    // 내가 모집한 주문
+    async getCreatedOrders() {
+        return await this.request("/users/me/posts");
+    },
 
-        // 비밀번호 반환 X
-        const { password, ...safeUser } = user;
-        return safeUser;
+    // 내가 참여한 주문
+    async getJoinedOrders() {
+        return await this.request("/users/me/joined");
     },
 
     // 로그아웃
-    logout() {
-        sessionStorage.removeItem("currentUserId");
-        window.location.href = "login.html";
+    async logout() {
+        try {
+            await this.request("/logout", "POST");
+        } finally {
+            localStorage.removeItem("authToken");
+            sessionStorage.removeItem("authToken");
+            window.location.href = "login.html";
+        }
+    },
+
+    // 회원 탈퇴
+    async deleteAccount() {
+        const result = await this.request(
+            "/users/me",
+            "DELETE"
+        );
+
+        localStorage.removeItem("authToken");
+        sessionStorage.removeItem("authToken");
+
+        return result;
     }
 };

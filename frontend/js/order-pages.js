@@ -1,8 +1,6 @@
 (() => {
     'use strict';
 
-    const POSTS_KEY = 'team22_posts_v1';
-    const USER_KEY = 'team22_current_user_v1';
     const STATE_KEY = 'team22_order_features_v1';
 
     const page = document.body.dataset.page;
@@ -68,37 +66,35 @@
         };
     }
 
+    let currentUser = null;
+
     function getCurrentUser() {
-        const adapter = window.Team22Adapter;
-        if (adapter && typeof adapter.getCurrentUser === 'function') {
-            return normalizeUser(adapter.getCurrentUser());
-        }
-        const keys = [USER_KEY, 'currentUser', 'loggedInUser'];
-        for (const key of keys) {
-            const user = normalizeUser(getJson(key, null));
-            if (user) return user;
-        }
-        return null;
+        return currentUser;
     }
 
     async function getPost(id) {
-        const adapter = window.Team22Adapter;
-        if (adapter && typeof adapter.getPostById === 'function') {
-            const post = await adapter.getPostById(id);
-            return post ? normalizePost(post) : null;
-        }
-        const posts = getJson(POSTS_KEY, []);
-        if (!Array.isArray(posts)) return null;
-        const post = posts.find(item => String(item.id ?? item.postId ?? item._id) === String(id));
+        const post = await Auth.request('/posts/' + encodeURIComponent(id));
         return post ? normalizePost(post) : null;
+    }
+
+    async function changeMembership(post, endpoint, method) {
+        try {
+            const result = await Auth.request(
+                '/posts/' + encodeURIComponent(post.id) + endpoint, method
+            );
+            renderDetail(normalizePost(result.post));
+            showToast(result.message);
+        } catch (error) {
+            showToast(error.message);
+        }
     }
 
     function normalizePost(raw) {
         const organizerRaw = raw.organizer || raw.author || raw.creator || {};
-        const organizerId = organizerRaw.id ?? organizerRaw.userId ?? raw.organizerId ?? raw.authorId ?? raw.userId;
+        const organizerId = organizerRaw.id ?? organizerRaw.userId ?? raw.creatorId ?? raw.organizerId ?? raw.authorId ?? raw.userId;
         const organizer = {
             id: organizerId != null ? String(organizerId) : '',
-            nickname: String(organizerRaw.nickname || organizerRaw.name || raw.authorNickname || raw.nickname || '모집자')
+            nickname: String(organizerRaw.nickname || organizerRaw.name || raw.creatorNickname || raw.authorNickname || raw.nickname || '모집자')
         };
         const max = Number(raw.maxMembers ?? raw.maxParticipants ?? raw.capacity ?? raw.targetCount ?? 0);
         const participants = Array.isArray(raw.participants) ? raw.participants : [];
@@ -120,12 +116,12 @@
             organizer,
             participants,
             maxMembers: Number.isFinite(max) && max > 0 ? max : null,
-            pickupPlace: String(raw.pickupPlace ?? raw.pickupLocation ?? raw.building ?? '미정'),
+            pickupPlace: String(raw.location ?? raw.pickupPlace ?? raw.pickupLocation ?? raw.building ?? '미정'),
             orderAt: raw.orderAt ?? raw.orderTime ?? null,
-            deadline: raw.deadline ?? raw.deadlineAt ?? raw.closeAt ?? null,
+            deadline: raw.deadlineTime ?? raw.deadline ?? raw.deadlineAt ?? raw.closeAt ?? null,
             pickupAt: raw.pickupAt ?? raw.pickupTime ?? null,
-            settlementMethod: String(raw.settlementMethod ?? raw.paymentMethod ?? '1/N'),
-            joinMethod: String(raw.joinMethod ?? 'approval'),
+            settlementMethod: String(raw.settlementType ?? raw.settlementMethod ?? raw.paymentMethod ?? '1/N'),
+            joinMethod: ['instant', '즉시 참여'].includes(raw.approvalType ?? raw.joinMethod) ? 'instant' : 'approval',
             status: String(raw.status ?? 'open'),
             totalAmount: total,
             personalAmounts: raw.personalAmounts && typeof raw.personalAmounts === 'object' ? raw.personalAmounts : {}
@@ -177,18 +173,6 @@
                 isHost: key === post.organizer.id
             });
         });
-        Object.entries(features.overrides || {}).forEach(([id, record]) => {
-            if (!record || record.status === 'cancelled') {
-                if (id !== post.organizer.id) people.delete(id);
-                return;
-            }
-            people.set(id, {
-                id,
-                nickname: String(record.nickname || people.get(id)?.nickname || '참여자'),
-                status: record.status === 'approved' ? 'approved' : 'pending',
-                isHost: id === post.organizer.id
-            });
-        });
         return [...people.values()];
     }
 
@@ -202,7 +186,7 @@
 
     function isClosed(post, members) {
         const status = post.status.toLowerCase();
-        if (['closed', '마감', '모집 마감', 'completed', 'cancelled'].includes(status)) return true;
+        if (['closed', '마감', '모집 마감', 'completed', 'cancelled', '완료', '취소'].includes(status)) return true;
         const deadline = post.deadline && new Date(post.deadline).getTime();
         if (Number.isFinite(deadline) && Date.now() > deadline) return true;
         return Boolean(post.maxMembers && members.filter(member => member.status !== 'cancelled').length >= post.maxMembers);
@@ -241,7 +225,7 @@
         const closed = isClosed(post, members);
         const confirmed = members.filter(person => person.status === 'approved').length;
         const enrolled = members.length;
-        const status = closed ? '모집 마감' : '모집 중';
+        const status = ['완료', 'completed'].includes(post.status) ? '완료' : closed ? '모집 마감' : '모집 중';
         const memberLimit = post.maxMembers ? `${enrolled} / ${post.maxMembers}명` : `${enrolled}명`;
 
         let action = '';
@@ -292,39 +276,40 @@
             </article>
         `;
 
-        document.getElementById('requestJoin')?.addEventListener('click', () => {
+        document.getElementById('requestJoin')?.addEventListener('click', async event => {
             if (closed) return showToast('모집이 마감되었습니다.');
-            updateFeatures(post.id, data => {
-                data.overrides[user.id] = {
-                    nickname: user.nickname,
-                    status: post.joinMethod === 'instant' ? 'approved' : 'pending'
-                };
-            });
-            renderDetail(post);
-            showToast(post.joinMethod === 'instant' ? '참여가 확정되었습니다.' : '참여 신청을 보냈습니다.');
+            event.currentTarget.disabled = true;
+            try {
+                await changeMembership(post, '/join', 'POST');
+            } finally {
+                const button = document.getElementById('requestJoin');
+                if (button) button.disabled = false;
+            }
         });
 
-        document.getElementById('cancelJoin')?.addEventListener('click', () => {
-            const updated = getFeatures(post.id);
-            if (updated.settlement?.requested) return showToast('정산이 시작되어 참여를 취소할 수 없습니다.');
-            updateFeatures(post.id, data => {
-                data.overrides[user.id] = { nickname: user.nickname, status: 'cancelled' };
-            });
-            renderDetail(post);
-            showToast('참여가 취소되었습니다.');
+        document.getElementById('cancelJoin')?.addEventListener('click', async event => {
+            if (getFeatures(post.id).settlement?.requested) {
+                return showToast('정산이 시작되어 참여를 취소할 수 없습니다.');
+            }
+            event.currentTarget.disabled = true;
+            try {
+                await changeMembership(post, '/join', 'DELETE');
+            } finally {
+                const button = document.getElementById('cancelJoin');
+                if (button) button.disabled = false;
+            }
         });
 
         document.querySelectorAll('[data-approve]').forEach(button => {
-            button.addEventListener('click', () => {
+            button.addEventListener('click', async () => {
                 if (!host) return;
-                const targetId = button.dataset.approve;
-                const person = members.find(item => item.id === targetId);
-                if (!person) return;
-                updateFeatures(post.id, data => {
-                    data.overrides[targetId] = { nickname: person.nickname, status: 'approved' };
-                });
-                renderDetail(post);
-                showToast('참여 신청을 승인했습니다.');
+                button.disabled = true;
+                try {
+                    await changeMembership(post, '/participants/' +
+                        encodeURIComponent(button.dataset.approve), 'PATCH');
+                } finally {
+                    button.disabled = false;
+                }
             });
         });
 
@@ -613,6 +598,7 @@
             return;
         }
         try {
+            currentUser = normalizeUser(await Auth.getCurrentUser());
             const post = await getPost(postId);
             if (!post) {
                 emptyView(root, '모집글을 찾을 수 없습니다', '게시글이 삭제되었거나 아직 팀의 데이터와 연결되지 않았습니다.');
@@ -628,7 +614,7 @@
     }
 
     window.addEventListener('storage', event => {
-        if ([POSTS_KEY, USER_KEY, STATE_KEY].includes(event.key)) init();
+        if ([STATE_KEY, 'authToken'].includes(event.key)) init();
     });
     init();
 })();
