@@ -71,11 +71,11 @@ body.order-page {
     font-size: 25px;
     line-height: normal;
     letter-spacing: normal;
-    color: #3498db;
+    color: var(--order-orange);
 }
 
 .order-page .logo a {
-    color: #3498db;
+    color: var(--order-orange);
     text-decoration: none;
     font: inherit;
     letter-spacing: inherit;
