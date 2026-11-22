@@ -43,38 +43,86 @@ body.order-page button { cursor: pointer; }
 body.order-page button:disabled { cursor: not-allowed; opacity: .48; }
 body.order-page :focus-visible { outline: 3px solid #ffad82; outline-offset: 3px; }
 
-.order-page .header {
-    background: #ffffff;
-    border-bottom: 1px solid #f6bc9c;
+
+body.order-page {
+    padding-top: 72px;
 }
 
-.order-page .header-inner {
-    max-width: 1020px;
-    min-height: 69px;
-    padding: 11px 24px;
-    margin: auto;
+.order-page .header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 72px;
+    padding: 0 max(24px, calc((100% - 1216px) / 2));
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 20px;
+    background-color: white;
+    border-bottom: 1px solid #eee;
+    box-sizing: border-box;
+    z-index: 20;
 }
 
 .order-page .logo {
-    color: var(--order-orange) !important;
-    font-size: 20px;
-    font-weight: 800;
-    letter-spacing: -.035em;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    font-weight: bold;
+    font-size: 25px;
+    line-height: normal;
+    letter-spacing: normal;
+    color: #3498db;
 }
 
-.order-page .nav {
+.order-page .logo a {
+    color: #3498db;
+    text-decoration: none;
+    font: inherit;
+    letter-spacing: inherit;
+}
+
+.order-page .header nav {
     display: flex;
-    gap: 24px;
     align-items: center;
-    font-size: 13px;
-    color: #777777;
+    gap: 48px;
 }
 
-.order-page .nav a:hover { color: var(--order-orange); }
+.order-page .header nav a {
+    font-family: Arial, sans-serif;
+    font-weight: normal;
+    font-size: 14px;
+    line-height: normal;
+    letter-spacing: normal;
+    color: #555;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.order-page .header nav a:hover,
+.order-page .header nav a.active {
+    color: #3498db;
+}
+
+/* 기존 계정 링크는 링크 기능을 유지하면서 공통 헤더 버튼 형태로 표시 */
+.order-page .header nav a.account-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 20px;
+    border: 1px solid #ddd;
+    border-radius: 50px;
+    background-color: white;
+    color: #555;
+    font-family: Arial, sans-serif;
+    font-size: 13.333px;
+    line-height: normal;
+    cursor: pointer;
+}
+
+.order-page .header nav a.account-link:hover {
+    color: #3498db;
+    border-color: #3498db;
+}
 
 .order-page .container {
     max-width: 990px;
@@ -112,7 +160,7 @@ body.order-page :focus-visible { outline: 3px solid #ffad82; outline-offset: 3px
 .order-subtitle { color: #919191; margin: 0 0 25px; font-size: 14px; }
 .order-description { margin: 0 0 24px; white-space: pre-wrap; overflow-wrap: anywhere; color: #555; }
 
-/* 모집글 상세 - 원본 시안의 회색 정보 박스와 두 버튼 */
+/* 모집글 상세 - 회색 정보 박스와 두 버튼 */
 .order-info-card {
     padding: 24px 25px;
     border: 1px solid var(--order-border);
@@ -164,7 +212,7 @@ body.order-page :focus-visible { outline: 3px solid #ffad82; outline-offset: 3px
 .order-member-status { font-size: 12px; color: var(--order-muted); }
 .order-mini-action { background: #fff4eb; border: 1px solid #ffdfc9; padding: 7px 10px; border-radius: 7px; color: #aa4b20; font-size: 12px; }
 
-/* 채팅 - 시안처럼 상대방 회색, 나의 말풍선 주황색 */
+/* 채팅 - 상대방 회색, 나의 말풍선 주황색 */
 .order-chat-title { margin: 0 0 3px; font-size: 23px; letter-spacing: -.04em; }
 .order-chat-summary { color: #9a9a9a; font-size: 13px; margin: 0 0 18px; }
 .order-chat-layout { display: grid; grid-template-columns: minmax(0,1fr) 260px; gap: 24px; align-items: start; }
@@ -231,8 +279,11 @@ body.order-page :focus-visible { outline: 3px solid #ffad82; outline-offset: 3px
 }
 
 @media (max-width: 600px) {
-    .order-page .header-inner { flex-wrap: wrap; padding: 12px 16px; }
-    .order-page .nav { width: 100%; justify-content: space-between; gap: 8px; font-size: 12px; }
+    .order-page .header { padding: 0 15px; }
+    .order-page .logo { font-size: 20px; }
+    .order-page .header nav { gap: 16px; }
+    .order-page .header nav a { font-size: 12px; }
+    .order-page .header nav a.account-link { padding: 8px 10px; font-size: 12px; }
     .order-page .container { padding: 20px 16px 60px; }
     .order-info-grid { grid-template-columns: 1fr; gap: 14px; }
     .order-info-field { grid-template-columns: 95px 1fr; }
