@@ -201,6 +201,10 @@ document.addEventListener("DOMContentLoaded", function () {
         footer.textContent = "👥 최대 " + post.maxParticipants + "명";
 
         card.append(top, title, body, footer);
+
+        card.addEventListener("click", function () {
+            window.location.href = "post_detail.html?id=" + encodeURIComponent(post.id);
+        });
         return card;
     }
 

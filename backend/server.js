@@ -33,6 +33,15 @@ app.get("/api/posts", (req, res) => {
   res.json(posts);
 });
 
+// 모집글 하나 조회
+app.get("/api/posts/:id", (req, res) => {
+  const post = posts.find((item) => String(item.id) === req.params.id);
+  if (!post) {
+    return res.status(404).json({ message: "모집글을 찾을 수 없어요." });
+  }
+  res.json(post);
+});
+
 // 모집글 등록 (기본 상태: '모집 중')
 app.post("/api/posts", (req, res) => {
   const {
@@ -46,6 +55,8 @@ app.post("/api/posts", (req, res) => {
     approvalType,
     minAmount,
     maxAmount,
+    storeUrl,
+    organizer,
     status
   } = req.body;
 
@@ -67,10 +78,15 @@ app.post("/api/posts", (req, res) => {
     deadlineTime,
     orderTime,
     maxParticipants: Number(maxParticipants),
-    settlementType: settlementType || null,
-    approvalType: approvalType || null,
+    settlementType: settlementType || "1/N",
+    approvalType: approvalType || "manual",
     minAmount: minAmount ?? null,
     maxAmount: maxAmount ?? null,
+    storeUrl: storeUrl || null,
+    organizer:
+      organizer && organizer.id
+        ? { id: String(organizer.id), nickname: String(organizer.nickname || "모집자") }
+        : null,
     status: finalStatus,
     createdAt: new Date().toISOString()
   };

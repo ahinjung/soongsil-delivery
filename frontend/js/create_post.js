@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", function () {
         window.location.href = "login.html";
         return;
     }
-    
+
     const form = document.getElementById("createPostForm");
     const minAmountInput = document.getElementById("minAmount");
     const maxAmountInput = document.getElementById("maxAmount");
@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", function () {
         inputEl.addEventListener("input", function (e) {
             let value = e.target.value;
             let numbersOnly = "";
-            
+
             for (let i = 0; i < value.length; i++) {
                 let char = value[i];
                 if (char >= "0" && char <= "9") {
@@ -99,7 +99,7 @@ document.addEventListener("DOMContentLoaded", function () {
     function showError(inputId, errorId, message) {
         const inputEl = document.getElementById(inputId);
         const errorEl = document.getElementById(errorId);
-        
+
         if (inputEl) {
             inputEl.classList.add("input-error");
         }
@@ -199,6 +199,14 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
+        const organizer = {
+            id: currentUser.id ?? currentUser.userId ?? currentUser.email,
+            nickname: currentUser.nickname ?? currentUser.name ?? currentUser.username ?? "모집자"
+        };
+        const settlementType = document.querySelector('input[name="settlementType"]:checked').value;
+        const approvalType = document.querySelector('input[name="approvalType"]:checked').value;
+        const storeUrl = document.getElementById("storeUrl").value.trim();
+
         try {
             const response = await fetch("http://localhost:3000/api/posts", {
                 method: "POST",
@@ -214,6 +222,10 @@ document.addEventListener("DOMContentLoaded", function () {
                     maxParticipants,
                     minAmount,
                     maxAmount,
+                    organizer,
+                    settlementType,
+                    approvalType,
+                    storeUrl,
                     status: "모집 중",
                 }),
             });
