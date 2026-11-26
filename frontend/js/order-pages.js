@@ -246,7 +246,18 @@
 
         let action = '';
         if (!user) {
-            action = '<a href="login.html" class="order-button order-button-primary">로그인 후 참여</a>';
+            const returnTo =
+                `post_detail.html?id=${encodeURIComponent(post.id)}`;
+        
+            const loginUrl =
+                `login.html?redirect=${encodeURIComponent(returnTo)}`;
+        
+            action = `
+                <a href="${loginUrl}"
+                   class="order-button order-button-primary">
+                    로그인 후 참여
+                </a>
+    `        ;
         } else if (host) {
             action = '<button class="order-button order-button-primary" type="button" disabled>내가 모집한 주문</button>';
         } else if (me?.status === 'pending') {
